@@ -23,7 +23,7 @@ def loadData(file):
 # Split the data into train and test sets
 def splitData(X, Y, percentage=0.3):
 	#Pretty straightforward, use the scikit-learn function
-	return train_test_split(X, Y, test_size=0.3)
+	return train_test_split(X, Y, test_size=percentage)
 
 def buildModel(X, Y):
 	#Create a model and fit it to the data

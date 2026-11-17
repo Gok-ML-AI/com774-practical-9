@@ -26,6 +26,22 @@ class TestTrain(unittest.TestCase):
         self.assertEqual(len(X_train) + len(X_test), len(self.testX))
         self.assertEqual(len(Y_train) + len(Y_test), len(self.testY))
 
+    def test_splitData_percentages(self):
+        #Test the split actually uses the percentage we give it.
+        #Use 100 rows so each percentage gives a whole number of rows.
+        X = [[i, i] for i in range(100)]
+        Y = ['Iris-setosa'] * 100
+        for percentage in [0.1, 0.2, 0.3, 0.5]:
+            with self.subTest(percentage=percentage):
+                X_train, X_test, Y_train, Y_test = splitData(X, Y, percentage)
+                expectedTest = round(len(X) * percentage)
+                #The test set should be the percentage we asked for...
+                self.assertEqual(len(X_test), expectedTest)
+                self.assertEqual(len(Y_test), expectedTest)
+                #...and the training set should be the rest
+                self.assertEqual(len(X_train), len(X) - expectedTest)
+                self.assertEqual(len(Y_train), len(Y) - expectedTest)
+
     def test_buildModel(self):
         #Test the model builder returns a model of the correct type
         model = buildModel(self.testX, self.testY)
@@ -37,9 +53,9 @@ class TestTrain(unittest.TestCase):
         # but this is a test of its function not it's performance.
         model = buildModel(self.testX, self.testY)
         acc = assessModel(model, self.testX, self.testY)
-        #TODO: finish these
-        # self.<FIXME>(acc, 0)
-        # self.<FIXME>(acc, 1)
+        # Accuracy must be between 0 and 1 inclusive
+        self.assertGreaterEqual(acc, 0)
+        self.assertLessEqual(acc, 1)
 
 if __name__ == '__main__':
     unittest.main()
